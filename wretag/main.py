@@ -6,7 +6,7 @@ import pathlib
 import re
 import sys
 
-def retag_wheel(wheel_path: str, local_tag: str, delete_original: bool = False, quiet: bool = False) -> pathlib.Path:
+def retag_wheel(wheel_path: str, local_tag: str, delete: bool = False, quiet: bool = False) -> pathlib.Path:
     wheel = pathlib.Path(wheel_path).resolve()
     if not wheel.is_file() or not wheel.name.endswith(".whl"):
         raise ValueError(f"Invalid wheel path: {wheel_path}")
@@ -50,7 +50,7 @@ def retag_wheel(wheel_path: str, local_tag: str, delete_original: bool = False, 
 
         new_wheel = next(wheel.parent.glob(f"*{new_version}*.whl"))
 
-        if delete_original:
+        if delete:
             wheel.unlink()
 
         if not quiet:
@@ -71,7 +71,7 @@ def main():
     success = True
     for wheel in args.wheels:
         try:
-            new_path = retag_wheel(wheel, args.tag, args.delete_original, args.quiet)
+            new_path = retag_wheel(wheel, args.tag, args.delete, args.quiet)
             if args.quiet:
                 print(new_path)
         except Exception as e:
